@@ -41,10 +41,12 @@ COPY scrypt/analyze.py /app/analyze.py
 COPY scrypt/analyzetext.py /app/analyzetext.py
 COPY scrypt/telemodel.py /app/telemodel.py
 
+RUN /app/venv/bin/python3 /app/telemodel.py
+
 # Ajouter le script d'entrée
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 # Lancer le script Python puis Ktor
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["java","-jar","/app/Detia.jar"]
 

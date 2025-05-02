@@ -42,6 +42,7 @@ RUN /app/venv/bin/pip install -r /app/requirements.txt
 COPY scrypt/analyze.py /app/analyze.py
 COPY scrypt/analyzetext.py /app/analyzetext.py
 COPY scrypt/telemodel.py /app/telemodel.py
+COPY modelIA/efficientnet-b0-355c32eb.pth /app/modelIA/efficientnet-b0-355c32eb.pth
 
 # Stage 4: Create the Runtime Image
 FROM amazoncorretto:22 AS runtime
@@ -55,10 +56,7 @@ COPY --from=build /home/gradle/src/build/libs/*.jar /app/Detia.jar
 # Copier le répertoire Python et l'environnement virtuel
 COPY --from=python /app/venv /app/venv
 
-# Ajouter le script d'entrée
-COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
 
 # Lancer le script Python puis Ktor
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["java","-jar","/app/Detia.jar"]
 

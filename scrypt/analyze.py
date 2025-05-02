@@ -6,7 +6,7 @@ from efficientnet_pytorch import EfficientNet
 
 # Charger le modèle avec 1000 classes (comme dans le fichier .pth)
 model = EfficientNet.from_name('efficientnet-b0')
-model.load_state_dict(torch.load('./modelIA/efficientnet-b0-355c32eb.pth'))
+model.load_state_dict(torch.load('/app/modelIA/efficientnet-b0-355c32eb.pth'))
 
 # Remplacer la dernière couche par une adaptée à 2 classes
 model._fc = torch.nn.Linear(model._fc.in_features, 2)

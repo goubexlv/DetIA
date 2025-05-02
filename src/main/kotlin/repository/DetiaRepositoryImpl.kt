@@ -93,4 +93,15 @@ class DetiaRepositoryImpl : DetiaRepository {
         }
 
     }
+
+    override suspend fun telechargerModel() {
+        try {
+            val process = ProcessBuilder("./venv/bin/python3", "/app/telemodel.py")
+                .redirectErrorStream(true)
+                .start()
+        } catch (e : Exception){
+
+        }
+
+    }
 }

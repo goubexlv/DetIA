@@ -3,7 +3,7 @@ import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 # Charger le modèle une fois
-model_path = "./modelIA/local-model"
+model_path = "/app/modelIA/local-model"
 
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 model = AutoModelForSequenceClassification.from_pretrained(model_path)

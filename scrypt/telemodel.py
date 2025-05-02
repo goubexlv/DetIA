@@ -1,7 +1,7 @@
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 model_name = "roberta-base-openai-detector"
-save_path = "./local-model"
+save_path = "/app/modelIA/local-model"
 
 # Téléchargement
 tokenizer = AutoTokenizer.from_pretrained(model_name)

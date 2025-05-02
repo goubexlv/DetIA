@@ -69,6 +69,13 @@ fun Route.analiseImageRoute(detiaRepository : DetiaRepository){
         }
     }
 
+    get(Endpoint.telechargerModel.path) {
+        detiaRepository.telechargerModel()
+    }
+
+    get(Endpoint.Root.path){
+        call.respondText("Bienvenu sur API")
+    }
 
 
 }

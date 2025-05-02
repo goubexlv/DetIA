@@ -38,7 +38,13 @@ COPY --from=python /app/venv /app/venv
 
 # Copier le script Python (ex: analyze.py)
 COPY scrypt/analyze.py /app/analyze.py
+COPY scrypt/analyzetext.py /app/analyzetext.py
+COPY scrypt/telemodel.py /app/telemodel.py
 
-# Spécifier la commande d'entrée
-ENTRYPOINT ["java","-jar","/app/Detia.jar"]
+# Ajouter le script d'entrée
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Lancer le script Python puis Ktor
+ENTRYPOINT ["/app/entrypoint.sh"]
 

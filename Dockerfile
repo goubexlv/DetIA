@@ -20,8 +20,8 @@ EXPOSE 8080
 RUN mkdir /app
 
 # Installer Python et pip
-RUN yum -y update && \
-    yum -y install python3 && \
+RUN apt -y update && \
+    apt -y install python3 && \
     pip3 install --upgrade pip
 
 # Copier le JAR

@@ -21,6 +21,8 @@ WORKDIR /app
 # Copier le fichier requirements.txt ou créer un fichier pour les dépendances Python
 COPY requirements.txt /app/requirements.txt
 
+RUN apt-get update && apt-get install -y python3 python3-pip
+
 # Créer un environnement virtuel et installer les dépendances
 RUN python3 -m venv /app/venv
 RUN /app/venv/bin/pip install -r /app/requirements.txt
@@ -44,8 +46,8 @@ COPY scrypt/telemodel.py /app/telemodel.py
 RUN /app/venv/bin/python3 /app/telemodel.py
 
 # Ajouter le script d'entrée
-COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+#COPY entrypoint.sh /app/entrypoint.sh
+#RUN chmod +x /app/entrypoint.sh
 
 # Lancer le script Python puis Ktor
 ENTRYPOINT ["java","-jar","/app/Detia.jar"]

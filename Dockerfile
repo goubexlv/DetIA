@@ -14,37 +14,29 @@ COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle buildFatJar --no-daemon
 
-# Stage 3: Install Python and setup virtual environment
-FROM python:3.12-slim AS python
-WORKDIR /app
-
-# Copier le fichier requirements.txt ou créer un fichier pour les dépendances Python
-COPY requirements.txt /app/requirements.txt
-
-# Créer un environnement virtuel et installer les dépendances
-RUN python3 -m venv /app/venv
-RUN /app/venv/bin/pip install -r /app/requirements.txt
-
-# Stage 4: Create the Runtime Image
+# Stage 3: Final runtime image with Python and Java
 FROM amazoncorretto:22 AS runtime
 EXPOSE 8080
 RUN mkdir /app
 
-# Copier l'artefact jar généré par Gradle
+# Installer Python et pip
+RUN yum -y update && \
+    yum -y install python3 && \
+    pip3 install --upgrade pip
+
+# Copier le JAR
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/Detia.jar
 
-# Copier le répertoire Python et l'environnement virtuel
-COPY --from=python /app/venv /app/venv
+# Copier les fichiers Python
+COPY requirements.txt /app/requirements.txt
+COPY scrypt/*.py /app/
 
-# Copier le script Python (ex: analyze.py)
-COPY scrypt/analyze.py /app/analyze.py
-COPY scrypt/analyzetext.py /app/analyzetext.py
-COPY scrypt/telemodel.py /app/telemodel.py
+# Installer les dépendances Python
+RUN pip3 install -r /app/requirements.txt
 
 # Ajouter le script d'entrée
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-# Lancer le script Python puis Ktor
+# Entrée principale
 ENTRYPOINT ["/app/entrypoint.sh"]
-

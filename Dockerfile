@@ -38,6 +38,11 @@ RUN /app/venv/bin/pip --version
 RUN /app/venv/bin/pip install --upgrade pip
 RUN /app/venv/bin/pip install -r /app/requirements.txt
 
+# Copier les scripts Python dans le répertoire /app du conteneur
+COPY scrypt/analyze.py /app/analyze.py
+COPY scrypt/analyzetext.py /app/analyzetext.py
+COPY scrypt/telemodel.py /app/telemodel.py
+
 # Stage 4: Create the Runtime Image
 FROM amazoncorretto:22 AS runtime
 EXPOSE 8080
@@ -46,22 +51,14 @@ RUN mkdir /app
 # Copier l'artefact jar généré par Gradle
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/Detia.jar
 
+
 # Copier le répertoire Python et l'environnement virtuel
 COPY --from=python /app/venv /app/venv
 
-# Copier le script Python (ex: analyze.py)
-COPY scrypt/analyze.py /app/analyze.py
-COPY scrypt/analyzetext.py /app/analyzetext.py
-COPY scrypt/telemodel.py /app/telemodel.py
-
-RUN chmod +x /app/telemodel.py
-
-
-RUN ls -l /app/telemodel.py
-
-# Exécuter le script Python dans l'environnement virtuel
-RUN /app/venv/bin/python3 /app/telemodel.py
+# Ajouter le script d'entrée
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 # Lancer le script Python puis Ktor
-ENTRYPOINT ["java","-jar","/app/Detia.jar"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 

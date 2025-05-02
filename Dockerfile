@@ -22,8 +22,8 @@ WORKDIR /app
 COPY requirements.txt /app/requirements.txt
 
 # Créer un environnement virtuel et installer les dépendances
-
-RUN pip3 install -r /app/requirements.txt
+RUN python3 -m venv /app/venv
+RUN /app/venv/bin/pip install -r /app/requirements.txt
 
 # Stage 4: Create the Runtime Image
 FROM amazoncorretto:22 AS runtime
@@ -33,6 +33,8 @@ RUN mkdir /app
 # Copier l'artefact jar généré par Gradle
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/Detia.jar
 
+# Copier le répertoire Python et l'environnement virtuel
+COPY --from=python /app/venv /app/venv
 
 # Copier le script Python (ex: analyze.py)
 COPY scrypt/analyze.py /app/analyze.py

@@ -1,5 +1,5 @@
+transformers
 torch
 torchvision
 Pillow
 efficientnet-pytorch
-transformers

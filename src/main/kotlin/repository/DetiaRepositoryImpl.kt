@@ -22,7 +22,7 @@ class DetiaRepositoryImpl : DetiaRepository {
         try {
             // 2. Lancer le script Python
             val process = ProcessBuilder(
-                "./venv/bin/python3", "/app/analyze.py", tempFile.absolutePath
+                "/app/venv/bin/python3", "/app/analyze.py", tempFile.absolutePath
             )
                 .redirectErrorStream(true) // merge stderr dans stdout pour tout lire
                 .start()
@@ -59,7 +59,7 @@ class DetiaRepositoryImpl : DetiaRepository {
 
     override suspend fun analyseText(text: String): Result {
         try {
-            val process = ProcessBuilder("./venv/bin/python3", "/app/analyzetext.py")
+            val process = ProcessBuilder("/app/venv/bin/python3", "/app/analyzetext.py")
                 .redirectErrorStream(true)
                 .start()
 
@@ -96,11 +96,17 @@ class DetiaRepositoryImpl : DetiaRepository {
 
     override suspend fun telechargerModel() {
         try {
-            val process = ProcessBuilder("./venv/bin/python3", "/app/telemodel.py")
+            val process = ProcessBuilder("/app/venv/bin/python3", "/app/telemodel.py")
                 .redirectErrorStream(true)
                 .start()
-        } catch (e : Exception){
 
+            val reader = process.inputStream.bufferedReader()
+            reader.lines().forEach { println("ModelLoader: $it") }
+
+            val exitCode = process.waitFor()
+            println("Model download finished with exit code: $exitCode")
+        } catch (e: Exception) {
+            println("Erreur pendant le téléchargement du modèle: ${e.message}")
         }
 
     }
